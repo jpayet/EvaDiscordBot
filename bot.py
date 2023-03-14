@@ -46,7 +46,7 @@ def run_discord_bot():
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
             if payload.emoji.name == '🦆':
-                role = discord.utils.get(guild.roles, name='Canard')
+                role = discord.utils.get(guild.roles, name='🦆Canard')
             else:
                 pass
 
@@ -73,7 +73,7 @@ def run_discord_bot():
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
             if payload.emoji.name == '🦆':
-                role = discord.utils.get(guild.roles, name='Canard')
+                role = discord.utils.get(guild.roles, name='🦆Canard')
             else:
                 pass
 
