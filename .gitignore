@@ -1,9 +1,6 @@
 # ignore environment variable
 /.env
+.env
 
 #ignore IDE file
-/.idea
-
-
-
-
+/.idea/workspace.xml
