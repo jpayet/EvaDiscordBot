@@ -1,4 +1,3 @@
-import os
 import discord
 import responses
 
@@ -68,10 +67,3 @@ class EvaDiscordBot(commands.Bot):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.remove_roles(role)
-
-
-intents = discord.Intents.all()
-eva_bot = EvaDiscordBot(command_prefix='/', intents=intents)
-eva_bot.run(os.getenv("TOKEN"))
-
-
