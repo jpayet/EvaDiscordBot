@@ -26,7 +26,7 @@ class EvaDiscordBot(commands.Bot):
     async def on_member_join(self, member):
         bienvenue_channel: discord.TextChannel = self.get_channel(1085268089257607278)
         await bienvenue_channel.send(content=f"Ravi de te voir parmi nous {member.display_name}")
-        role = discord.utils.get(member.guild.roles, name='Recrue')
+        role = discord.utils.get(member.guild.roles, name='New')
         await member.add_roles(role)
 
     async def on_raw_reaction_add(self, payload):
@@ -46,6 +46,22 @@ class EvaDiscordBot(commands.Bot):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
+        elif message_id == 1085678888451063849:
+            guild_id = payload.guild_id
+            guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
+
+            if payload.emoji.name == '✅':
+                role = discord.utils.get(guild.roles, name='Membre')
+                role_del = discord.utils.get(guild.roles, name='New')
+            else:
+                role = None
+                role_del = None
+
+            if role is not None and role_del is not None:
+                member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+                if member is not None:
+                    await member.add_roles(role)
+                    await member.remove_roles(role_del)
 
     async def on_raw_reaction_remove(self, payload):
         message_id = payload.message_id
@@ -64,3 +80,19 @@ class EvaDiscordBot(commands.Bot):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.remove_roles(role)
+        elif message_id == 1085678888451063849:
+            guild_id = payload.guild_id
+            guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
+
+            if payload.emoji.name == '✅':
+                role = discord.utils.get(guild.roles, name='New')
+                role_del = discord.utils.get(guild.roles, name='Membre')
+            else:
+                role = None
+                role_del = None
+
+            if role is not None and role_del is not None:
+                member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
+                if member is not None:
+                    await member.add_roles(role)
+                    await member.remove_roles(role_del)
