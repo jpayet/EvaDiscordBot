@@ -3,27 +3,26 @@ import discord
 import responses
 
 from dotenv import load_dotenv
+from discord.ext import commands
+
 load_dotenv()
 
-async def send_message(message, user_message, is_private):
-    try:
-        response = responses.handle_response(user_message)
-        await message.author.send(response) if is_private else await message.channel.send(response)
-    except Exception as e:
-        print(e)
+class EvaDiscordBot(commands.Bot):
+    def __int__(self):
+        super().__init__()
 
+    async def on_ready(self):
+        print(f'{self.user.display_name} est lancé !')
 
-def run_discord_bot():
-    intents = discord.Intents.all()
-    client = discord.Client(intents=intents)
+    async def send_message(self, message, user_message, is_private):
+        try:
+            response = responses.handle_response(user_message)
+            await message.author.send(response) if is_private else await message.channel.send(response)
+        except Exception as e:
+            print(e)
 
-    @client.event
-    async def on_ready():
-        print(f'{client.user} est lancé !')
-
-    @client.event
-    async def on_message(message):
-        if message.author == client.user:
+    async def on_message(self, message):
+        if message.author == self.user:
             return
 
         username = str(message.author)
@@ -38,19 +37,17 @@ def run_discord_bot():
         else:
             await send_message(message, user_message, is_private=False)
 
-    @client.event
-    async def on_member_join(member):
-        bienvenue_channel: discord.TextChannel = client.get_channel(1085268089257607278)
+    async def on_member_join(self, member):
+        bienvenue_channel: discord.TextChannel = self.get_channel(1085268089257607278)
         await bienvenue_channel.send(content=f"Ravi de te voir parmi nous {member.display_name}")
         role = discord.utils.get(member.guild.roles, name='Recrue')
         await member.add_roles(role)
 
-    @client.event
-    async def on_raw_reaction_add(payload):
+    async def on_raw_reaction_add(self, payload):
         message_id = payload.message_id
         if message_id == 1085189648025927730:
             guild_id = payload.guild_id
-            guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
+            guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
 
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
@@ -58,7 +55,6 @@ def run_discord_bot():
                 role = discord.utils.get(guild.roles, name='🦆Canard')
             else:
                 pass
-
 
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
@@ -69,15 +65,11 @@ def run_discord_bot():
             else:
                 print("Role not found")
 
-
-
-
-    @client.event
-    async def on_raw_reaction_remove(payload):
+    async def on_raw_reaction_remove(self, payload):
         message_id = payload.message_id
         if message_id == 1085189648025927730:
             guild_id = payload.guild_id
-            guild = discord.utils.find(lambda g: g.id == guild_id, client.guilds)
+            guild = discord.utils.find(lambda g: g.id == guild_id, self.guilds)
 
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
@@ -95,4 +87,9 @@ def run_discord_bot():
             else:
                 print("Role not found")
 
-    client.run(os.getenv("TOKEN"))
+
+intents = discord.Intents.all()
+eva_bot = EvaDiscordBot(command_prefix='/', intents=intents)
+eva_bot.run(os.getenv("TOKEN"))
+
+
