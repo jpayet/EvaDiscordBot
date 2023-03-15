@@ -23,8 +23,6 @@ def run_discord_bot():
 
         if response is not None:
             await message.channel.send(response)
-        else:
-            return
 
     @client.event
     async def on_member_join(member):
@@ -51,10 +49,6 @@ def run_discord_bot():
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
-                else:
-                    return
-            else:
-                return
 
     @client.event
     async def on_raw_reaction_remove(payload):
@@ -74,9 +68,5 @@ def run_discord_bot():
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.remove_roles(role)
-                else:
-                    return
-            else:
-                return
 
     client.run(os.getenv("TOKEN"))
