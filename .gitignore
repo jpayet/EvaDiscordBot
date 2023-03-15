@@ -1,2 +1,5 @@
 # ignore environment variable
 .env
+
+#ignore IDE file
+.idea
