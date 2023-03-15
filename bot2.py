@@ -29,6 +29,10 @@ class EvaDiscordBot(commands.Bot):
         role = discord.utils.get(member.guild.roles, name='New')
         await member.add_roles(role)
 
+    async def on_member_remove(self, member):
+        print(f'bye {member}')
+        pass
+
     async def on_raw_reaction_add(self, payload):
         message_id = payload.message_id
         if message_id == 1085189648025927730:
