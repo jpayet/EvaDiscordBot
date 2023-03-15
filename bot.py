@@ -26,12 +26,6 @@ def run_discord_bot():
         else:
             return
 
-        # if user_message[0] == '?':
-        #     user_message = user_message[1:]
-        #     await send_message(message, user_message, is_private=True)
-        # else:
-        #     await send_message(message, user_message, is_private=False)
-
     @client.event
     async def on_member_join(member):
         bienvenue_channel: discord.TextChannel = client.get_channel(1085268089257607278)
