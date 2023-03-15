@@ -5,6 +5,7 @@ import responses
 from dotenv import load_dotenv
 load_dotenv()
 
+
 async def send_message(message, user_message, is_private):
     try:
         response = responses.handle_response(user_message)
@@ -68,9 +69,6 @@ def run_discord_bot():
                     print("Member not found")
             else:
                 print("Role not found")
-
-
-
 
     @client.event
     async def on_raw_reaction_remove(payload):
