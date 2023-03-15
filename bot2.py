@@ -15,9 +15,6 @@ class EvaDiscordBot(commands.Bot):
         print(f'{self.user.display_name} est en marche !')
 
     async def on_message(self, message):
-        if message.author == self.user:
-            return
-
         response = responses.handle_response(message.content.lower())
 
         if message.author == self.user:
