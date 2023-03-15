@@ -6,38 +6,31 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-async def send_message(message, user_message, is_private):
-    try:
-        response = responses.handle_response(user_message)
-        await message.author.send(response) if is_private else await message.channel.send(response)
-    except Exception as e:
-        print(e)
-
-
 def run_discord_bot():
     intents = discord.Intents.all()
     client = discord.Client(intents=intents)
 
     @client.event
     async def on_ready():
-        print(f'{client.user} est lancé !')
+        print(f'{client.user} est en marche !')
 
     @client.event
     async def on_message(message):
+        response = responses.handle_response(message.content.lower())
+
         if message.author == client.user:
             return
 
-        username = str(message.author)
-        user_message = str(message.content)
-        channel = str(message.channel)
-
-        print(f"{username} a dit : '{user_message}' ({channel})")
-
-        if user_message[0] == '?':
-            user_message = user_message[1:]
-            await send_message(message, user_message, is_private=True)
+        if response is not None:
+            await message.channel.send(response)
         else:
-            await send_message(message, user_message, is_private=False)
+            return
+
+        # if user_message[0] == '?':
+        #     user_message = user_message[1:]
+        #     await send_message(message, user_message, is_private=True)
+        # else:
+        #     await send_message(message, user_message, is_private=False)
 
     @client.event
     async def on_member_join(member):
@@ -55,20 +48,19 @@ def run_discord_bot():
 
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
-            if payload.emoji.name == '🦆':
+            elif payload.emoji.name == '🦆':
                 role = discord.utils.get(guild.roles, name='🦆Canard')
             else:
-                pass
-
+                role = None
 
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
                 else:
-                    print("Member not found")
+                    return
             else:
-                print("Role not found")
+                return
 
     @client.event
     async def on_raw_reaction_remove(payload):
@@ -79,18 +71,18 @@ def run_discord_bot():
 
             if payload.emoji.name == '🎮':
                 role = discord.utils.get(guild.roles, name='Gaming')
-            if payload.emoji.name == '🦆':
+            elif payload.emoji.name == '🦆':
                 role = discord.utils.get(guild.roles, name='🦆Canard')
             else:
-                pass
+                role = None
 
             if role is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.remove_roles(role)
                 else:
-                    print("Member not found")
+                    return
             else:
-                print("Role not found")
+                return
 
     client.run(os.getenv("TOKEN"))
