@@ -9,7 +9,8 @@ load_dotenv()
 
 class EvaDiscordBot(commands.Bot):
     def __int__(self):
-        super().__init__()
+        intents = discord.Intents.all()
+        super().__init__(command_prefix="!", intents=intents)
 
     async def on_ready(self):
         print(f'{self.user.display_name} est en marche !')
@@ -99,4 +100,7 @@ class EvaDiscordBot(commands.Bot):
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
+
                     await member.remove_roles(role_del)
+
+
