@@ -53,6 +53,7 @@ def run_discord_bot():
     @bot.event
     async def on_raw_reaction_add(payload):
         message_id = payload.message_id
+
         if message_id == 1085189648025927730:
             guild_id = payload.guild_id
             guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
@@ -68,6 +69,7 @@ def run_discord_bot():
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
+
         elif message_id == 1085678888451063849:
             guild_id = payload.guild_id
             guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
@@ -75,11 +77,6 @@ def run_discord_bot():
             if payload.emoji.name == '✅':
                 role = discord.utils.get(guild.roles, name='Membre')
                 role_del = discord.utils.get(guild.roles, name='New')
-            else:
-                role = None
-                role_del = None
-
-            if role is not None and role_del is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
@@ -103,6 +100,7 @@ def run_discord_bot():
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.remove_roles(role)
+
         elif message_id == 1085678888451063849:
             guild_id = payload.guild_id
             guild = discord.utils.find(lambda g: g.id == guild_id, bot.guilds)
@@ -110,21 +108,19 @@ def run_discord_bot():
             if payload.emoji.name == '✅':
                 role = discord.utils.get(guild.roles, name='New')
                 role_del = discord.utils.get(guild.roles, name='Membre')
-            else:
-                role = None
-                role_del = None
-
-            if role is not None and role_del is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
-
                     await member.remove_roles(role_del)
 
     @bot.command(name='del')
-    async def delete(ctx, nb_of_message: int):
-        messages = ctx.channel.history(limit=nb_of_message + 1)
-        async for each_message in messages:
-            await each_message.delete()
+    async def delete(ctx, nb_of_message):
+        try:
+            nb = int(nb_of_message)
+            messages = ctx.channel.history(limit=nb + 1)
+            async for each_message in messages:
+                await each_message.delete()
+        except ValueError:
+            return None
 
     bot.run(os.getenv("TOKEN"))
