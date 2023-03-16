@@ -9,15 +9,16 @@ load_dotenv()
 
 class EvaDiscordBot(commands.Bot):
     def __int__(self):
-        intents = discord.Intents.all()
-        super().__init__(command_prefix="!", intents=intents)
+        intents = discord.Intents.all()  # droits du bot
+        super().__init__(command_prefix="!", intents=intents)  # "!" prefix pour les commandes ciblés (pas global)
 
     async def on_ready(self):
         print(f'{self.user.display_name} est en marche !')
-        try:
-            synced = await self.tree.sync()
-        except Exception as e:
-            print(e)
+
+    # load the command collection (cog)
+    async def setup_hook(self) -> None:
+        await self.load_extension(f"cogs.MainCog")
+        await self.tree.sync()  # get the slash command for global guild (all)
 
     async def on_message(self, message):
         response = responses.handle_response(message.content.lower())
@@ -27,6 +28,8 @@ class EvaDiscordBot(commands.Bot):
 
         if response is not None:
             await message.channel.send(response)
+
+        await self.process_commands(message) # renvoie vers les le listener de commandes
 
     async def on_member_join(self, member):
         bienvenue_channel: discord.TextChannel = self.get_channel(1085268089257607278)
@@ -95,5 +98,3 @@ class EvaDiscordBot(commands.Bot):
                 if member is not None:
                     await member.add_roles(role)
                     await member.remove_roles(role_del)
-
-
