@@ -14,6 +14,10 @@ class EvaDiscordBot(commands.Bot):
 
     async def on_ready(self):
         print(f'{self.user.display_name} est en marche !')
+        try:
+            synced = await self.tree.sync()
+        except Exception as e:
+            print(e)
 
     async def on_message(self, message):
         response = responses.handle_response(message.content.lower())
@@ -58,11 +62,6 @@ class EvaDiscordBot(commands.Bot):
             if payload.emoji.name == '✅':
                 role = discord.utils.get(guild.roles, name='Membre')
                 role_del = discord.utils.get(guild.roles, name='New')
-            else:
-                role = None
-                role_del = None
-
-            if role is not None and role_del is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
@@ -92,15 +91,9 @@ class EvaDiscordBot(commands.Bot):
             if payload.emoji.name == '✅':
                 role = discord.utils.get(guild.roles, name='New')
                 role_del = discord.utils.get(guild.roles, name='Membre')
-            else:
-                role = None
-                role_del = None
-
-            if role is not None and role_del is not None:
                 member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
                 if member is not None:
                     await member.add_roles(role)
-
                     await member.remove_roles(role_del)
 
 
