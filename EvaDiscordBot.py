@@ -39,7 +39,15 @@ class EvaDiscordBot(commands.Bot):
 
     async def on_member_remove(self, member):
         print(f'bye {member}')
-        pass
+        guild = member.guild
+        for channel in guild.text_channels:
+            async for message in channel.history(limit=None):
+                if message.author != member:
+                    reactions = message.reactions
+                    for reaction in reactions:
+                        async for user in reaction.users():
+                            if user == member:
+                                await reaction.remove(member)
 
     async def on_raw_reaction_add(self, payload):
         message_id = payload.message_id
